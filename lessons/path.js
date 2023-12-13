@@ -18,3 +18,9 @@ console.log("Step - ", path.step); // ?
 console.log("isAbsolute - ", path.isAbsolute(fullpath)); // boolean value, it checks if the path is absolute
 console.log("Basename - ", path.basename(fullpath)); // returns name of file
 console.log("Extname - ", path.extname(fullpath)); // returns extension of file or empty string if extension is absand
+
+const siteURL = "http://lcalhost:8080/users?id=5123";
+
+const url = new URL(siteURL);
+
+console.log(url);
