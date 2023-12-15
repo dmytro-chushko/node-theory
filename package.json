@@ -8,6 +8,7 @@
     "start:cross-env": "cross-env PORT=5000 node ./lessons/process.js",
     "start:env-file": "node ./lessons/process.js",
     "start:path": "node ./lessons/path.js",
+    "start:file": "node ./lessons/file-system.js",
     "//comment": "have to use npm i cross-env for using env var during starting by script, for using vars from file needs npm i dotenv"
   },
   "repository": {
