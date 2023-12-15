@@ -9,6 +9,7 @@
     "start:env-file": "node ./lessons/process.js",
     "start:path": "node ./lessons/path.js",
     "start:file": "node ./lessons/file-system.js",
+    "start:task": "node ./tasks/env-path-file.js",
     "//comment": "have to use npm i cross-env for using env var during starting by script, for using vars from file needs npm i dotenv"
   },
   "repository": {
