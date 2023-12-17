@@ -1,6 +1,9 @@
 const http = require("http");
+const EventEmitter = require("events");
 
 const PORT = process.env.PORT || 5000;
+
+const emitter = new EventEmitter();
 // const COMMAND = {
 //   USERS: "users",
 //   POSTS: "posts",
@@ -40,7 +43,14 @@ class Router {
     if (endpoint[method]) {
       throw new Error(`${method} by the address ${path} already exist`);
     }
+
+    endpoint[method] = handler;
+    emitter.on(`[${path}]:[${method}]`, (req, res) => {
+      handler(req, res);
+    });
   }
 }
+
+const router = new Router();
 
 server.listen(PORT, () => console.log(`Server start on PORT ${PORT}`));
