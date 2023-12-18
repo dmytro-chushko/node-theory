@@ -4,18 +4,18 @@ const EventEmitter = require("events");
 const PORT = process.env.PORT || 5000;
 
 const emitter = new EventEmitter();
-// const COMMAND = {
+// const PATH = {
 //   USERS: "users",
 //   POSTS: "posts",
 // };
 
 // const server = http.createServer((req, res) => {
-//   const currentCommand = req.url.slice(1);
+//   const currentPath = req.url.slice(1);
 
 //   const urls = {
-//     [COMMAND.USERS]: () =>
+//     [PATH.USERS]: () =>
 //       res.end(JSON.stringify([{ id: 1, name: "User One" }])),
-//     [COMMAND.POSTS]: () =>
+//     [PATH.POSTS]: () =>
 //       res.end(JSON.stringify([{ id: 1, post: "Post One" }])),
 //   };
 
@@ -23,8 +23,8 @@ const emitter = new EventEmitter();
 //     "Content-Type": "application/json",
 //   });
 
-//   return urls[currentCommand]
-//     ? urls[currentCommand]()
+//   return urls[currentPath]
+//     ? urls[currentPath]()
 //     : res.end("Waiting command...");
 // });
 
@@ -38,7 +38,7 @@ class Router {
       this.endpoints[path] = {};
     }
 
-    const endpoint = this.endpoint[path];
+    const endpoint = this.endpoints[path];
 
     if (endpoint[method]) {
       throw new Error(`${method} by the address ${path} already exist`);
@@ -49,8 +49,39 @@ class Router {
       handler(req, res);
     });
   }
+
+  get(path, handler) {
+    this.request("GET", path, handler);
+  }
+
+  post(path, handler) {
+    this.request("POST", path, handler);
+  }
+
+  put(path, handler) {
+    this.request("PUT", path, handler);
+  }
+
+  delete(path, handler) {
+    this.request("DELETE", path, handler);
+  }
 }
 
 const router = new Router();
+
+router.get("/users", (req, res) => {
+  res.end("YOU SEND REQEST TO /USERS");
+});
+
+router.get("/posts", (req, res) => {
+  res.end("YOU SEND REQUEST TO /POSTS");
+});
+
+const server = http.createServer((req, res) => {
+  const emmited = emitter.emit(`[${req.url}]:[${req.method}]`, req, res);
+  if (!emmited) {
+    res.end("Path not found");
+  }
+});
 
 server.listen(PORT, () => console.log(`Server start on PORT ${PORT}`));
