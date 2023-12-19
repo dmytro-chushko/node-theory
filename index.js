@@ -1,9 +1,10 @@
-const http = require("http");
-const EventEmitter = require("events");
+// const http = require("http");
+const Application = require("./framework/Application");
+const userRouter = require("./src/user-router");
+const jsonParser = require("./framework/parseJson");
 
 const PORT = process.env.PORT || 5000;
 
-const emitter = new EventEmitter();
 // const PATH = {
 //   USERS: "users",
 //   POSTS: "posts",
@@ -28,60 +29,10 @@ const emitter = new EventEmitter();
 //     : res.end("Waiting command...");
 // });
 
-class Router {
-  constructor() {
-    this.endpoints = {};
-  }
+const app = new Application();
 
-  request(method = "GET", path, handler) {
-    if (!this.endpoints[path]) {
-      this.endpoints[path] = {};
-    }
+app.use(jsonParser);
 
-    const endpoint = this.endpoints[path];
+app.addRouter(userRouter);
 
-    if (endpoint[method]) {
-      throw new Error(`${method} by the address ${path} already exist`);
-    }
-
-    endpoint[method] = handler;
-    emitter.on(`[${path}]:[${method}]`, (req, res) => {
-      handler(req, res);
-    });
-  }
-
-  get(path, handler) {
-    this.request("GET", path, handler);
-  }
-
-  post(path, handler) {
-    this.request("POST", path, handler);
-  }
-
-  put(path, handler) {
-    this.request("PUT", path, handler);
-  }
-
-  delete(path, handler) {
-    this.request("DELETE", path, handler);
-  }
-}
-
-const router = new Router();
-
-router.get("/users", (req, res) => {
-  res.end("YOU SEND REQEST TO /USERS");
-});
-
-router.get("/posts", (req, res) => {
-  res.end("YOU SEND REQUEST TO /POSTS");
-});
-
-const server = http.createServer((req, res) => {
-  const emmited = emitter.emit(`[${req.url}]:[${req.method}]`, req, res);
-  if (!emmited) {
-    res.end("Path not found");
-  }
-});
-
-server.listen(PORT, () => console.log(`Server start on PORT ${PORT}`));
+app.listen(PORT, () => console.log(`Server start on PORT ${PORT}`));
