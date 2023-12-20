@@ -11,6 +11,8 @@
     "start:file": "node ./lessons/file-system.js",
     "start:task": "node ./tasks/env-path-file.js",
     "start:events": "cross-env MESSAGE=new_message node ./lessons/events.js",
+    "start:stream": "node ./lessons/stream.js",
+    "start:server": "node ./lessons/server.js",
     "start": "nodemon index.js",
     "//comment": "have to use npm i cross-env for using env var during starting by script, for using vars from file needs npm i dotenv"
   },
