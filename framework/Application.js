@@ -1,5 +1,6 @@
 const http = require("http");
 const EventEmitter = require("events");
+const bodyParse = require("./bodyParse");
 
 module.exports = class Application {
   constructor() {
@@ -8,8 +9,8 @@ module.exports = class Application {
     this.middlewares = [];
   }
 
-  use(middleware) {
-    this.middlewares.push(middleware);
+  use(...middlewares) {
+    this.middlewares.push(...middlewares);
   }
 
   listen(port, callback) {
@@ -34,14 +35,18 @@ module.exports = class Application {
 
   _createServer() {
     return http.createServer((req, res) => {
-      const emmited = this.emitter.emit(
-        this._getRouteMask(req.url, req.method),
-        req,
-        res
-      );
-      if (!emmited) {
-        res.end("Path not found");
-      }
+      this.middlewares.forEach((middleware) => middleware(req, res));
+
+      req.on("end", () => {
+        const emmited = this.emitter.emit(
+          this._getRouteMask(req.pathname, req.method),
+          req,
+          res
+        );
+        if (!emmited) {
+          res.end("Path not found");
+        }
+      });
     });
   }
 
